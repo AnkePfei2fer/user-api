@@ -1,0 +1,20 @@
+### GET all users
+
+GET http://localhost:3000/api/users HTTP/1.1
+
+
+### GET single user
+
+GET http://localhost:3000/api/users/Anke HTTP/1.1
+
+
+### GET a non-existing user
+
+GET http://localhost:3000/api/users/Anke3000 HTTP/1.1
+
+
+### DELETE user
+
+DELETE http://localhost:3000/api/users/Anke HTTP/1.1
+
+
