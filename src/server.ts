@@ -1,15 +1,21 @@
 import express from 'express';
 
-const app = express(); // erstelle App
-const port = 3000; // lokaler offener Port
+const app = express(); // create app
+const port = 3000; // local open port
+
+const users = ['David', 'Anke', 'Alice', 'Zied'];
 
 app.get('/api/users/:name/', (request, response) => {
-  response.send(request.params.name);
+  const isNameKnown = users.includes(request.params.name);
+  if (isNameKnown) {
+    response.send(request.params.name);
+  } else {
+    response.status(404).send('Name is unknown'); // Console gibt zusätzlich den Status aus
+  }
 });
 
 app.get('/api/users', (_request, response) => {
-  const users = ['David', 'Anke', 'Alice', 'Zied'];
-  response.send(users); // schickt Inhalt des Arrays zurück
+  response.send(users); // returns content of the array
 });
 
 app.get('/', (_req, res) => {
