@@ -28,3 +28,6 @@ Content-Type: application/json
     "username": "Anke9000",
     "password": "Anke123"
 }
+
+### Get logged user
+GET http://localhost:3000/api/me HTTP/1.1

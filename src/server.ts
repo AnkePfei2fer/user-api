@@ -1,7 +1,14 @@
 import express from 'express';
+import cookieParser from 'cookie-parser';
 
 const app = express(); // create app
 const port = 3000; // use local open port
+
+// Middleware for parsing application/json (strings of the json object is converted into JS)
+app.use(express.json());
+
+// Middleware for parsing cookies
+app.use(cookieParser());
 
 const users = [
   { name: 'David', username: 'David9000', password: 'David123' },
@@ -10,8 +17,16 @@ const users = [
   { name: 'Zied', username: 'Zied9000', password: 'Zied123' },
 ];
 
-// Middleware for parsing application/json (strings of the json object is converted into JS)
-app.use(express.json());
+// GET logged user
+app.get('/api/me', (request, response) => {
+  const username = request.cookies.username;
+  const foundUser = users.find((user) => user.username === username);
+  if (foundUser) {
+    response.send(foundUser);
+  } else {
+    response.status(404).send('User not found');
+  }
+});
 
 // LOGIN a user (for security reasons, don't tell if only the password is incorrect)
 app.post('/api/login/', (request, response) => {
@@ -21,6 +36,7 @@ app.post('/api/login/', (request, response) => {
       user.password === request.body.password
   );
   if (isNameKnown) {
+    response.setHeader('Set-Cookie', `username=${isNameKnown.username}`);
     response.send('Login successful.');
   } else {
     response.status(401).send('Incorrect username or password.');
