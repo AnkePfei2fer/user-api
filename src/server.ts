@@ -13,9 +13,31 @@ const users = [
 // Middleware for parsing application/json (strings of the json object is converted into JS)
 app.use(express.json());
 
+// LOGIN a user (for security reasons, don't tell if only the password is incorrect)
+app.post('/api/login/', (request, response) => {
+  const isNameKnown = users.find(
+    (user) =>
+      user.username === request.body.username &&
+      user.password === request.body.password
+  );
+  if (isNameKnown) {
+    response.send('Login successful.');
+  } else {
+    response.status(401).send('Incorrect username or password.');
+  }
+});
+
 // POST a new user
 app.post('/api/users/', (request, response) => {
   const newUser = request.body;
+  if (
+    typeof newUser.name !== 'string' ||
+    typeof newUser.username !== 'string' ||
+    typeof newUser.password !== 'string'
+  ) {
+    response.status(404).send('Missing properties');
+    return;
+  }
   const isNameKnown = users.find(
     (newUser) => newUser.username === request.body.username
   );
@@ -23,7 +45,7 @@ app.post('/api/users/', (request, response) => {
     response.status(409).send('User already exists.');
   } else {
     users.push(newUser);
-    response.send(`${JSON.stringify(newUser)} added`);
+    response.send(`${request.body.username} added`);
   }
 });
 
