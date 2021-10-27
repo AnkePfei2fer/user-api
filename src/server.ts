@@ -5,6 +5,22 @@ const port = 3000; // use local open port
 
 const users = ['David', 'Anke', 'Alice', 'Zied'];
 
+// Middleware for parsing application/json (strings of the json object is converted into JS)
+app.use(express.json());
+
+// POST a new user
+app.post('/api/users/', (request, response) => {
+  const newUser = request.body;
+  const isNameKnown = users.includes(newUser.name);
+  if (isNameKnown) {
+    response.status(409).send('User has already been added.');
+  } else {
+    users.push(newUser.name);
+    response.send(`${newUser.name} added`);
+  }
+});
+
+// DELETE user
 app.delete('/api/users/:name', (request, response) => {
   const isNameKnown = users.includes(request.params.name);
   if (isNameKnown) {
@@ -18,6 +34,7 @@ app.delete('/api/users/:name', (request, response) => {
   }
 });
 
+// Display single user
 app.get('/api/users/:name/', (request, response) => {
   const isNameKnown = users.includes(request.params.name);
   if (isNameKnown) {
@@ -27,6 +44,7 @@ app.get('/api/users/:name/', (request, response) => {
   }
 });
 
+// Display all users
 app.get('/api/users', (_request, response) => {
   response.send(users); // returns content of the array
 });
