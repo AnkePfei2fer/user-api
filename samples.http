@@ -1,0 +1,33 @@
+### GET all users
+GET http://localhost:3000/api/users HTTP/1.1
+
+### GET single user
+GET http://localhost:3000/api/users/Anke9000 HTTP/1.1
+
+### GET a non-existing user
+GET http://localhost:3000/api/users/Anke3000 HTTP/1.1
+
+### DELETE user
+DELETE http://localhost:3000/api/users/Anke9000 HTTP/1.1
+
+### POST a new user
+POST http://localhost:3000/api/users HTTP/1.1
+Content-Type: application/json 
+
+{
+    "name": "Dennis",
+    "username": "Dennis9000",
+    "password": "Dennis123"
+}
+
+### Login a user
+POST http://localhost:3000/api/login HTTP/1.1
+Content-Type: application/json
+
+{
+    "username": "Anke9000",
+    "password": "Anke123"
+}
+
+### Get logged user
+GET http://localhost:3000/api/me HTTP/1.1
