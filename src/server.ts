@@ -4,6 +4,7 @@ dotenv.config();
 import express from 'express';
 import cookieParser from 'cookie-parser';
 import { connectDatabase } from './utils/database';
+import { getUserCollection } from './utils/database';
 
 if (!process.env.MONGODB_URI) {
   throw new Error('No MongoDB URI dotenv variable.');
@@ -24,6 +25,29 @@ const users = [
   { name: 'Alice', username: 'Alice9000', password: 'Alice123' },
   { name: 'Zied', username: 'Zied9000', password: 'Zied123' },
 ];
+
+// POST a new user
+app.post('/api/users/', (request, response) => {
+  const usersCollection = getUserCollection();
+  const newUser = request.body;
+  if (
+    typeof newUser.name !== 'string' ||
+    typeof newUser.username !== 'string' ||
+    typeof newUser.password !== 'string'
+  ) {
+    response.status(404).send('Missing properties');
+    return;
+  }
+  const isNameKnown = users.find(
+    (newUser) => newUser.username === request.body.username
+  );
+  if (isNameKnown) {
+    response.status(409).send('User already exists.');
+  } else {
+    usersCollection.insertOne(newUser);
+    response.send(`${request.body.username} added`);
+  }
+});
 
 // GET logged user
 app.get('/api/me', (request, response) => {
@@ -48,28 +72,6 @@ app.post('/api/login/', (request, response) => {
     response.send('Login successful.');
   } else {
     response.status(401).send('Incorrect username or password.');
-  }
-});
-
-// POST a new user
-app.post('/api/users/', (request, response) => {
-  const newUser = request.body;
-  if (
-    typeof newUser.name !== 'string' ||
-    typeof newUser.username !== 'string' ||
-    typeof newUser.password !== 'string'
-  ) {
-    response.status(404).send('Missing properties');
-    return;
-  }
-  const isNameKnown = users.find(
-    (newUser) => newUser.username === request.body.username
-  );
-  if (isNameKnown) {
-    response.status(409).send('User already exists.');
-  } else {
-    users.push(newUser);
-    response.send(`${request.body.username} added`);
   }
 });
 
