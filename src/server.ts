@@ -1,6 +1,13 @@
+import dotenv from 'dotenv';
+dotenv.config();
+
 import express from 'express';
 import cookieParser from 'cookie-parser';
-import { connectDatabase, connectDatabse } from './utils/database';
+import { connectDatabase } from './utils/database';
+
+if (!process.env.MONGODB_URI) {
+  throw new Error('No MongoDB URI dotenv variable.');
+}
 
 const app = express(); // create app
 const port = 3000; // use local open port
@@ -105,9 +112,9 @@ app.get('/', (_req, res) => {
   res.send('Hello World!'); // Server soll "Hello World" zurückschicken
 });
 
-connectDatabase("geheime mongodb url").then(() =>
-app.listen(port, () => {
-  console.log(`Example app listening at http://localhost:${port}`);
-});
-)
-
+// Mit der MongoDB verbinden (PW wird noch verschlüsselt)
+connectDatabase(process.env.MONGODB_URI).then(() =>
+  app.listen(port, () => {
+    console.log(`Example app listening at http://localhost:${port}`);
+  })
+);
