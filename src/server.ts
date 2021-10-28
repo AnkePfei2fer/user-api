@@ -1,5 +1,6 @@
 import express from 'express';
 import cookieParser from 'cookie-parser';
+import { connectDatabse } from './utils/database';
 
 const app = express(); // create app
 const port = 3000; // use local open port
